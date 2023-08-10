@@ -41,7 +41,7 @@ Warning :
   docker buildx build -t username/python3-glibc2.24:tag . -f dockerfiles/python-build.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
 ```
 
-#### 10.5.7.1. Déboguer l'image ####
+## 1.3. Déboguer l'image ####
 
 Run an image :
 
