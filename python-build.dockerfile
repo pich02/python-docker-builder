@@ -1,5 +1,5 @@
 # BASE IMAGE python 3.X.Y with GLICB 2.24 and openssl 1.1.1q
-FROM debian:stretch-slim as builder
+FROM debian:9 as python3-10-glibc-2-24
 
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -9,11 +9,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
     && echo GLIBC=$(ldd --version)
 
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.10.12
-
-RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
-    deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
-    deb http://archive.debian.org/debian-security stretch/updates main contrib non-free\n" >> /etc/apt/sources.list
+ENV PYTHON_VERSION=3.10.10
 
 RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/apt,type=cache,sharing=locked \
@@ -63,30 +59,26 @@ RUN cd Python-*/; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
     make PROFILE_TASK="-m test.regrtest --pgo -j$CORE_NB" -j$CORE_NB; \
     make altinstall; \
-    /sbin/ldconfig -v; \
-    make clean
+    /sbin/ldconfig -v
+
+# clean src
+
+RUN rm -rf Python-*
+RUN rm -rf openssl-1.1.1q
+
+# AMD64 BUILDER
+
+FROM --platform=linux/amd64 python3-10-glibc-2-24 AS builder-amd64
+
+# ARM32v7 BUILDER
+
+FROM --platform=linux/arm/v7 python3-10-glibc-2-24 AS builder-armv7
 
 RUN /usr/bin/wget https://sh.rustup.rs -O rustup.sh;\
     chmod ugo+rwx rustup.sh; \
     ./rustup.sh -y; \
-    export PATH=$PATH:/root/.cargo/bin; \
-    rm /rustup*
+    export PATH=$PATH:/root/.cargo/bin
 
 ENV PATH=$PATH:/root/.cargo/bin
-
-RUN wget https://bootstrap.pypa.io/get-pip.py;  \
-    python3.10 get-pip.py; \
-    rm get-pip.py
-
-# clean src
-
-RUN rm -rf /Python-*
-RUN rm -rf /openssl-1.1.1q*
-RUN apt-get autoclean -y
-RUN apt-get autoremove -y
-RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
-RUN rm -rf /var/lib/apt/lists/*
-
-RUN python3.10 --version
 
 CMD ["python3.10"]
