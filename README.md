@@ -19,12 +19,6 @@ Add in your .docker/config.json
 }
 ```
 
-Check that everything is installed with
-
-```bash
-./scripts/check-qemu.sh
-```
-
 ## 1.2. Build multiplatform python image for old OS {#r_docker_push} ###
 
 Log to dockerhub :
