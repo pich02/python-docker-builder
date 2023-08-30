@@ -9,7 +9,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
     && echo GLIBC=$(ldd --version)
 
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.10.12
+ENV PYTHON_VERSION=3.10.13
 
 RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
