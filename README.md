@@ -32,7 +32,8 @@ Warning :
 - first build of ARM image may take up to 2 hours
 
 ```bash
-  docker buildx build -t username/python3-glibc2.24:tag . -f dockerfiles/python-build.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
+TAG=3.11.6
+docker buildx build -t username/python3-glibc2.24:$TAG . -f python-build.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
 ```
 
 ## 1.3. Déboguer l'image ####
