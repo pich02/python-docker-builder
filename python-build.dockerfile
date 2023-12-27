@@ -9,7 +9,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
     && echo GLIBC=$(ldd --version)
 
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.11.6
+ENV PYTHON_VERSION=3.12.1
 
 RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
@@ -75,7 +75,7 @@ RUN /usr/bin/wget https://sh.rustup.rs -O rustup.sh;\
 ENV PATH=$PATH:/root/.cargo/bin
 
 RUN wget https://bootstrap.pypa.io/get-pip.py;  \
-    python3.11 get-pip.py; \
+    python3.12 get-pip.py; \
     rm get-pip.py
 
 # clean src
@@ -87,6 +87,6 @@ RUN apt-get autoremove -y
 RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 RUN rm -rf /var/lib/apt/lists/*
 
-RUN python3.11 --version
+RUN python3.12 --version
 
-CMD ["python3.11"]
+CMD ["python3.12"]
