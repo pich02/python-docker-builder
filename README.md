@@ -1,6 +1,6 @@
 [TOC]
 
-Images publishing here : https://hub.docker.com/r/pich02/python3-glibc2.24/tags
+Images publish here : https://hub.docker.com/r/pich02/python3-glibc2.24/tags
 
 # 1. Build multiplatform docker  {#r_build_docker} ###
 
