@@ -9,7 +9,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
     && echo GLIBC=$(ldd --version)
 
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.12.1
+ENV PYTHON_VERSION=3.12.2
 
 RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
@@ -65,7 +65,7 @@ ENV PATH=$PATH:/root/.cargo/bin
 RUN wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz -O Python-x.y.z.tar.gz; \
     tar -xvf Python-x.y.z.tar.gz
 
-ENV LD_LIBRARY_PATH=/usr/local/lib/
+ENV LD_LIBRARY_PATH=/usr/local/lib/:/openssl-3.2.1/
 
 RUN cd Python-*/; \
     export LDFLAGS="-L/openssl-3.2.1/"; \
