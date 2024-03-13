@@ -44,29 +44,15 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     apt-get install -y python3-lxml; \
     apt-get install -y python3-wheel
 
-RUN wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1q.tar.gz; \
-    tar xzvf openssl-1.1.1q.tar.gz
+RUN wget https://www.openssl.org/source/openssl-3.2.1.tar.gz; \
+    tar xzvf openssl-3.2.1.tar.gz
 
-RUN cd openssl-1.1.1q; \
-    ./config; \
+RUN cd openssl-3.2.1; \
+     ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
     make -j$CORE_NB; \
     make install
 
-RUN wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz -O Python-x.y.z.tar.gz; \
-    tar -xvf Python-x.y.z.tar.gz
-
-ENV LD_LIBRARY_PATH=/usr/local/lib/
-
-RUN cd Python-*/; \
-    ./configure --enable-optimizations --with-lto --disable-test-modules --without-doc-strings --with-computed-gotos --enable-shared --with-system-ffi --enable-loadable-sqlite-extensions --with-ssl-default-suites=openssl --with-openssl=/openssl-1.1.1q/
-
-RUN cd Python-*/; \
-    CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
-    make PROFILE_TASK="-m test.regrtest --pgo -j$CORE_NB" -j$CORE_NB; \
-    make altinstall; \
-    /sbin/ldconfig -v; \
-    make clean
 
 RUN /usr/bin/wget https://sh.rustup.rs -O rustup.sh;\
     chmod ugo+rwx rustup.sh; \
@@ -76,21 +62,46 @@ RUN /usr/bin/wget https://sh.rustup.rs -O rustup.sh;\
 
 ENV PATH=$PATH:/root/.cargo/bin
 
+RUN wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz -O Python-x.y.z.tar.gz; \
+    tar -xvf Python-x.y.z.tar.gz
+
+ENV LD_LIBRARY_PATH=/usr/local/lib/
+
+RUN cd Python-*/; \
+    export LDFLAGS="-L/openssl-3.2.1/"; \
+    export CPPFLAGS="-L/openssl-3.2.1/include"; \
+    ./configure --enable-optimizations --with-lto=full --disable-test-modules  \
+    --without-doc-strings --with-computed-gotos --enable-shared --with-system-ffi  \
+    --enable-loadable-sqlite-extensions --with-ssl-default-suites=openssl --with-openssl=/openssl-3.2.1/ \
+    --with-openssl-rpath=auto \
+
+RUN cd Python-*/; \
+    CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
+    make PROFILE_TASK="-m test.regrtest --pgo -j$CORE_NB" -j$CORE_NB; \
+    make install; \
+    /sbin/ldconfig -v; \
+    make clean; \
+    make distclean
+
 RUN wget https://bootstrap.pypa.io/get-pip.py;  \
     python3.11 get-pip.py; \
     rm get-pip.py
 
-# clean src
-
-RUN rm -rf /Python-*; \
-  rm -rf /openssl-1.1.1q*; \
-  apt-get autoclean -y; \
-  apt-get autoremove -y; \
-  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-  rm -rf /var/lib/apt/lists/*
-
 RUN python3.11 -m pip install pip --upgrade ;\
-  python3.11 -m pip install lxml>=5.1.0
+  python3.11 -m pip install lxml>=5.1.0 \
+
+## clean src
+RUN rm -rf /Python-*; \
+    rm -rf /openssl-3.2.1*; \
+    apt-get remove -y software-properties-common; \
+    apt-get autoclean -y; \
+    apt-get autoremove -y; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    pip purge; \
+    find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf ;\
+    rm -rf /var/lib/apt/lists/*; \
+    rm -rf /root/.rustup; \
+    rm -rf /root/.cache/*
 
 RUN python3.11 --version
 
