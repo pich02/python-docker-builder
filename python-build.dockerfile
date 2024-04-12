@@ -9,7 +9,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
     && echo GLIBC=$(ldd --version)
 
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.11.8
+ENV PYTHON_VERSION=3.11.9
 
 RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
@@ -40,6 +40,7 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     apt-get install -y tk-dev; \
     apt-get install -y llvm; \
     apt-get install -y wget; \
+    apt-get install -y curl; \
     apt-get install -y uuid-dev; \
     apt-get install -y python3-lxml; \
     apt-get install -y python3-wheel
@@ -53,8 +54,7 @@ RUN cd openssl-3.2.1; \
     make -j$CORE_NB; \
     make install
 
-
-RUN /usr/bin/wget https://sh.rustup.rs -O rustup.sh;\
+RUN /usr/bin/wget --no-check-certificate https://sh.rustup.rs -O rustup.sh;\
     chmod ugo+rwx rustup.sh; \
     ./rustup.sh -y; \
     export PATH=$PATH:/root/.cargo/bin; \
@@ -73,7 +73,7 @@ RUN cd Python-*/; \
     ./configure --enable-optimizations --with-lto=full --disable-test-modules  \
     --without-doc-strings --with-computed-gotos --enable-shared --with-system-ffi  \
     --enable-loadable-sqlite-extensions --with-ssl-default-suites=openssl --with-openssl=/openssl-3.2.1/ \
-    --with-openssl-rpath=auto \
+    --with-openssl-rpath=auto
 
 RUN cd Python-*/; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
@@ -87,8 +87,8 @@ RUN wget https://bootstrap.pypa.io/get-pip.py;  \
     python3.11 get-pip.py; \
     rm get-pip.py
 
-RUN python3.11 -m pip install pip --upgrade ;\
-  python3.11 -m pip install lxml>=5.1.0 \
+RUN python3.11 -m pip install pip --upgrade ; \
+  python3.11 -m pip install lxml>=5.1.0
 
 ## clean src
 RUN rm -rf /Python-*; \
@@ -100,7 +100,6 @@ RUN rm -rf /Python-*; \
     pip purge; \
     find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf ;\
     rm -rf /var/lib/apt/lists/*; \
-    rm -rf /root/.rustup; \
     rm -rf /root/.cache/*
 
 RUN python3.11 --version
