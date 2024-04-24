@@ -32,11 +32,22 @@ Warning :
 - first build of ARM image may take up to 2 hours
 
 ```bash
-TAG=3.11.6
+TAG=3.11.9
 docker buildx build -t username/python3-glibc2.24:$TAG . -f python-build.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
+
 ```
 
-## 1.3. Déboguer l'image ####
+## 1.3. Build multi-arch scip ###
+
+put scip-9.0.0.tgz source inside packages directory
+
+```bash
+TAG=3.11.9
+docker buildx build -t username/scip-multi-arch:$TAG . -f scip-build.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
+```
+
+
+## 1.4. Déboguer l'image ####
 
 Run an image :
 
