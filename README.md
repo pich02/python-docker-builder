@@ -43,7 +43,7 @@ put scip-9.0.0.tgz source inside packages directory
 
 ```bash
 TAG=9.0.0
-docker buildx build -t pich02/scip-multi-arch:$TAG . -f scip-build.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
+sudo docker buildx build -t pich02/scip-multi-arch:$TAG . -f scip-build.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
 ```
 
 ## 1.4. Build python3 with scip ##

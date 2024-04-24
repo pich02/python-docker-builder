@@ -10,7 +10,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
 RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
   --mount=target=/var/cache/apt,type=cache,sharing=locked \
   apt update; \
-  apt install -y git make cmake build-essential libz-dev libgmp-dev libreadline-dev libncurses-dev; \
+  apt install -y git cmake build-essential libz-dev libgmp-dev libreadline-dev libncurses-dev; \
   apt-get install -y wget g++ m4 xz-utils unzip zlib1g-dev libboost-program-options-dev libboost-serialization-dev libboost-regex-dev libboost-iostreams-dev libtbb-dev libreadline-dev pkg-config git liblapack-dev libgsl-dev flex bison libcliquer-dev gfortran file dpkg-dev libopenblas-dev rpm
 
 RUN git clone --depth 1 --branch release-700 https://github.com/scipopt/soplex.git; \
