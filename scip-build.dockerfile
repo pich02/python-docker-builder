@@ -3,6 +3,7 @@ FROM debian:bookworm as scip-builder
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG TARGETVARIANT
+ENV TARGETARCH=$TARGETARCH
 
 RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH}, TARGETVARIANT=${TARGETVARIANT}"
 
@@ -28,9 +29,9 @@ RUN mkdir scip-9.0.0/build; \
     mkdir scip-9.0.0/lib/include; \
     mkdir scip-9.0.0/lib/static
 
-RUN ln -s /usr/local/include/soplex/ /scip-9.0.0/lib/include/spxinc; \
-    ln -s /usr/local/lib/libsoplex.a /scip-9.0.0/lib/static/libsoplex.linux.${TARGETARCH}.gnu.a; \
-    ln -s /usr/local/lib/libsoplex.a /usr/local/lib/libsoplex.linux.${TARGETARCH}.gnu.opt.a
+COPY create_symlink.sh /create_symlink.sh
+
+RUN create_symlink.sh
 
 RUN cd scip-9.0.0; \
     cmake -Bbuild . -DAUTOBUILD=on -DCOVERAGE=off -DSHARED=false -DREADLINE=false; \
