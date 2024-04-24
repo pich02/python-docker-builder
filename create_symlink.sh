@@ -2,7 +2,7 @@
 
 if [[ ${TARGETARCH} == "amd64" ]]; then
   ARCH="x86_64"
-elif [[ ${TARGETARCH} == "arm64"  ]]
+elif [[ ${TARGETARCH} == "arm64"  ]]; then
  ARCH="arm"
 else
   ARCH=${TARGETARCH}
