@@ -31,7 +31,7 @@ RUN mkdir scip-9.0.0/build; \
 
 COPY create_symlink.sh /create_symlink.sh
 
-RUN create_symlink.sh
+RUN /create_symlink.sh
 
 RUN cd scip-9.0.0; \
     cmake -Bbuild . -DAUTOBUILD=on -DCOVERAGE=off -DSHARED=false -DREADLINE=false; \
