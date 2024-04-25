@@ -66,3 +66,25 @@ Connect to it with :
 
 ```bash
 docker exec -it $(docker ps -aqf "name=test-debug") /bin/bash
+```
+
+## 1.6. troubleshooting ##
+
+### 1.6.1. GCP compute engine ###
+
+Docker build failed to "apt update"
+
+check mtu 
+
+```bash
+ip addr | grep mtu
+```
+
+mtu of enx3 and docker0 must be the same if not added :
+
+{
+  "mtu": 1460
+}
+
+to /etc/docker/daemon.json
+
