@@ -1,5 +1,5 @@
 FROM pich02/scip-multi-arch:9.0.0 as scip-image
-FROM pich02/python3-glibc2.24:3.11.9
+FROM pich02/python3-glibc2.24:3.12.3
 
 COPY --from=scip-image /scip/ /usr/local/
 
