@@ -54,6 +54,9 @@ RUN cd openssl-3.2.1; \
     make -j$CORE_NB; \
     make install
 
+RUN apt update; \
+    apt -y install apt-transport-https ca-certificates curl
+
 RUN /usr/bin/wget --no-check-certificate https://sh.rustup.rs -O rustup.sh;\
     chmod ugo+rwx rustup.sh; \
     ./rustup.sh -y; \
@@ -88,11 +91,12 @@ RUN wget https://bootstrap.pypa.io/get-pip.py;  \
     rm get-pip.py
 
 RUN python3.11 -m pip install pip --upgrade ; \
-  python3.11 -m pip install lxml>=5.1.0
+  python3.11 -m pip install lxml>=5.1.0; \
+  python3.11 -m pip install cryptography==42.0.5
 
 ## clean src
-RUN rm -rf /Python-*; \
-    rm -rf /openssl-3.2.1*; \
+RUN rm -rf /Python-*; \$ \
+    rm /openssl-3.2.1.tar.gz; \
     apt-get remove -y software-properties-common; \
     apt-get autoclean -y; \
     apt-get autoremove -y; \
