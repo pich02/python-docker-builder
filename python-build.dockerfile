@@ -49,7 +49,7 @@ RUN wget https://www.openssl.org/source/openssl-3.2.1.tar.gz; \
     tar xzvf openssl-3.2.1.tar.gz
 
 RUN cd openssl-3.2.1; \
-     ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic; \
+     ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic no-docs; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
     make -j$CORE_NB; \
     make install
@@ -91,8 +91,7 @@ RUN wget https://bootstrap.pypa.io/get-pip.py;  \
     rm get-pip.py
 
 RUN python3.11 -m pip install pip --upgrade ; \
-  python3.11 -m pip install lxml>=5.1.0; \
-  python3.11 -m pip install cryptography==42.0.5
+  python3.11 -m pip install lxml>=5.1.0
 
 ## clean src
 RUN rm -rf /Python-*; \$ \
