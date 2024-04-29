@@ -8,6 +8,8 @@ ARG TARGETVARIANT
 RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH}, TARGETVARIANT=${TARGETVARIANT}" \
     && echo GLIBC=$(ldd --version)
 
+EVN OPENSSL_VERSION=3.2.0
+ENV RUSTC_VERSION=1.77.2
 ENV LANG=C.UTF-8
 ENV PYTHON_VERSION=3.11.9
 
@@ -40,16 +42,15 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     apt-get install -y tk-dev; \
     apt-get install -y llvm; \
     apt-get install -y wget; \
-    apt-get install -y curl; \
     apt-get install -y uuid-dev; \
     apt-get install -y python3-lxml; \
     apt-get install -y python3-wheel
 
-RUN wget https://www.openssl.org/source/openssl-3.2.1.tar.gz; \
-    tar xzvf openssl-3.2.1.tar.gz
+RUN wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz; \
+    tar xzvf openssl-${OPENSSL_VERSION}.tar.gz
 
-RUN cd openssl-3.2.1; \
-     ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic no-docs; \
+RUN cd openssl-${OPENSSL_VERSION}; \
+     ./config -fPIC --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic no-docs; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
     make -j$CORE_NB; \
     make install
@@ -59,7 +60,7 @@ RUN apt update; \
 
 RUN /usr/bin/wget --no-check-certificate https://sh.rustup.rs -O rustup.sh;\
     chmod ugo+rwx rustup.sh; \
-    ./rustup.sh -y; \
+    ./rustup.sh -y --default-toolchain=${RUSTC_VERSION}; \
     export PATH=$PATH:/root/.cargo/bin; \
     rm /rustup*
 
@@ -71,11 +72,11 @@ RUN wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSIO
 ENV LD_LIBRARY_PATH=/usr/local/lib/
 
 RUN cd Python-*/; \
-    export LDFLAGS="-L/openssl-3.2.1/"; \
-    export CPPFLAGS="-L/openssl-3.2.1/include"; \
+    export LDFLAGS="-L/openssl-${OPENSSL_VERSION}/"; \
+    export CPPFLAGS="-L/openssl-${OPENSSL_VERSION}/include"; \
     ./configure --enable-optimizations --with-lto=full --disable-test-modules  \
     --without-doc-strings --with-computed-gotos --enable-shared --with-system-ffi  \
-    --enable-loadable-sqlite-extensions --with-ssl-default-suites=openssl --with-openssl=/openssl-3.2.1/ \
+    --enable-loadable-sqlite-extensions --with-ssl-default-suites=openssl --with-openssl=/openssl-${OPENSSL_VERSION}/ \
     --with-openssl-rpath=auto
 
 RUN cd Python-*/; \
@@ -95,7 +96,7 @@ RUN python3.11 -m pip install pip --upgrade ; \
 
 ## clean src
 RUN rm -rf /Python-*; \$ \
-    rm /openssl-3.2.1.tar.gz; \
+    rm /openssl-${OPENSSL_VERSION}.tar.gz; \
     apt-get remove -y software-properties-common; \
     apt-get autoclean -y; \
     apt-get autoremove -y; \
