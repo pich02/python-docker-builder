@@ -1,8 +1,12 @@
 [TOC]
 
-# 1. Build multiplatform docker  {#r_build_docker} #
 
-## 1.1. Requirements  {#r_docker_req} ##
+Images publish here : https://hub.docker.com/r/pich02/python3-glibc2.24/tags
+
+# 1. Build multiplatform docker  {#r_build_docker} ###
+
+## 1.1. Requirements  {#r_docker_req} ####
+
 
 ```bash
 sudo apt-get install -y docker-ce
@@ -32,6 +36,7 @@ Warning :
 - first build of ARM image may take up to 2 hours
 
 ```bash
+
 TAG=3.11.9
 docker buildx build -t pich02/python3-glibc2.24:$TAG . -f python-build.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
 
@@ -55,6 +60,7 @@ docker buildx build -t pich02/python3-glibc2.24:${TAG}-scip . -f python-scip.doc
 
 
 ## 1.5. Déboguer l'image ##
+
 
 Run an image :
 
