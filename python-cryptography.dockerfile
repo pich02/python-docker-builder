@@ -14,6 +14,8 @@ RUN cd /openssl-3.2.0; \
 
 RUN python3.11 -m pip wheel cryptography==42.0.5 --no-binary cryptography
 
+RUN python3.11 -m pip install python3.11 -m pip install cryptography-42.0.5*.whl
+
 RUN rm -rf openssl320; \
     rm openssl-${OPENSSL_VERSION}.tar.gz
 
