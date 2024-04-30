@@ -108,4 +108,4 @@ RUN rm -rf /Python-*; \$ \
 
 RUN python3.11 --version
 
-CMD ["python3.11"]
+CMD ["python3.11  -m pip list"]

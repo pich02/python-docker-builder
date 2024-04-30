@@ -17,4 +17,4 @@ RUN python3.11 -m pip wheel cryptography==42.0.5 --no-binary cryptography
 RUN rm -rf openssl320; \
     rm openssl-${OPENSSL_VERSION}.tar.gz
 
-CMD ["python3.11"]
+CMD ["python3.11 -m pip list"]
