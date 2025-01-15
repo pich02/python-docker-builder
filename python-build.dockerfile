@@ -9,9 +9,9 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
     && echo GLIBC=$(ldd --version)
 
 ENV OPENSSL_VERSION=3.2.0
-ENV RUSTC_VERSION=1.77.2
+ENV RUSTC_VERSION=1.84.0
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.11.9
+ENV PYTHON_VERSION=3.11.11
 
 RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
@@ -91,9 +91,6 @@ RUN wget https://bootstrap.pypa.io/get-pip.py;  \
     python3.11 get-pip.py; \
     rm get-pip.py
 
-RUN python3.11 -m pip install pip --upgrade ; \
-  python3.11 -m pip install lxml>=5.1.0
-
 ## clean src
 RUN rm -rf /Python-*; \$ \
     rm /openssl-${OPENSSL_VERSION}.tar.gz; \
@@ -101,7 +98,7 @@ RUN rm -rf /Python-*; \$ \
     apt-get autoclean -y; \
     apt-get autoremove -y; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    pip purge; \
+    pip cache purge; \
     find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf ;\
     rm -rf /var/lib/apt/lists/*; \
     rm -rf /root/.cache/*
