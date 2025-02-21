@@ -13,31 +13,33 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
   apt install -y git cmake build-essential libz-dev libgmp-dev libreadline-dev libncurses-dev; \
   apt-get install -y wget g++ m4 xz-utils unzip zlib1g-dev libboost-program-options-dev libboost-serialization-dev libboost-regex-dev libboost-iostreams-dev libtbb-dev libreadline-dev pkg-config git liblapack-dev libgsl-dev flex bison libcliquer-dev gfortran file libopenblas-dev rpm
 
-RUN git clone --depth 1 --branch release-700 https://github.com/scipopt/soplex.git; \
+RUN git clone --depth 1 --branch release-712 https://github.com/scipopt/soplex.git; \
     cd soplex; \
     mkdir build; \
     cd build; \
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DBOOST=false -DCOVERAGE=off; \
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DBOOST=off -DCOVERAGE=off -DCMAKE_CXX_FLAGS=-fPIC; \
     make -j$(grep -c ^processor /proc/cpuinfo); \
-    make install
+    make -j$(grep -c ^processor /proc/cpuinfo) install;
 
-COPY packages/scip-9.0.0.tgz /
-RUN tar xvf scip-9.0.0.tgz
+RUN git clone --depth 1 --branch v920 https://github.com/scipopt/scip.git;
 
-RUN mkdir scip-9.0.0/build; \
-    mkdir scip-9.0.0/lib; \
-    mkdir scip-9.0.0/lib/include; \
-    mkdir scip-9.0.0/lib/static
+RUN mkdir scip/build; \
+    mkdir scip/lib; \
+    mkdir scip/lib/include; \
+    mkdir scip/lib/static; \
+    mkdir scip-install;
 
-COPY create_symlink.sh /create_symlink.sh
+COPY create_symlink.sh /
 
-RUN /create_symlink.sh
+RUN /create_symlink.sh ${TARGETARCH};
 
-RUN cd scip-9.0.0; \
-    cmake -Bbuild . -DAUTOBUILD=on -DCOVERAGE=off -DSHARED=false -DREADLINE=false; \
-    make -j$(grep -c ^processor /proc/cpuinfo) LPS=spx READLINE=false ZIMPL=false MAKESOFTLINKS=false; \
-    make -j$(grep -c ^processor /proc/cpuinfo) install INSTALLDIR=/scip/
+RUN cd scip; \
+    cmake -Bbuild . -DAUTOBUILD=on -DCOVERAGE=off -DSHARED=true -DREADLINE=false -DSOPLEX_DIR=/usr/local/lib/; \
+    make -j$(grep -c ^processor /proc/cpuinfo) LPS=spx READLINE=false ZIMPL=false MAKESOFTLINKS=true SHARED=true;
 
-RUN /scip/bin/scip --version
+RUN cd scip;\
+    yes | make install INSTALLDIR=/scip;
+
+RUN /scip/bin/scip --version;
 
 CMD ["/scip/bin/scip"]
