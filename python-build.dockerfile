@@ -11,7 +11,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
 ENV OPENSSL_VERSION=3.2.0
 ENV RUSTC_VERSION=1.84.0
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.11.11
+ENV PYTHON_VERSION=3.13.3
 
 RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
@@ -88,7 +88,7 @@ RUN cd Python-*/; \
     make distclean
 
 RUN wget https://bootstrap.pypa.io/get-pip.py;  \
-    python3.11 get-pip.py; \
+    python3.13 get-pip.py; \
     rm get-pip.py
 
 ## clean src
@@ -103,6 +103,6 @@ RUN rm -rf /Python-*; \$ \
     rm -rf /var/lib/apt/lists/*; \
     rm -rf /root/.cache/*
 
-RUN python3.11 --version
+RUN python3.13 --version
 
-CMD ["python3.11  -m pip list"]
+CMD ["python3.13  -m pip list"]
