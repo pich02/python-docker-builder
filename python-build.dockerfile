@@ -44,7 +44,8 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     apt-get install -y wget; \
     apt-get install -y uuid-dev; \
     apt-get install -y python3-lxml; \
-    apt-get install -y python3-wheel
+    apt-get install -y python3-wheel; \
+    apt -y install apt-transport-https ca-certificates curl
 
 RUN wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz; \
     tar xzvf openssl-${OPENSSL_VERSION}.tar.gz
@@ -54,9 +55,6 @@ RUN cd openssl-${OPENSSL_VERSION}; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
     make -j$CORE_NB; \
     make install
-
-RUN apt update; \
-    apt -y install apt-transport-https ca-certificates curl
 
 RUN /usr/bin/wget --no-check-certificate https://sh.rustup.rs -O rustup.sh;\
     chmod ugo+rwx rustup.sh; \
@@ -74,8 +72,10 @@ ENV LD_LIBRARY_PATH=/usr/local/lib/
 RUN cd Python-*/; \
     export LDFLAGS="-L/openssl-${OPENSSL_VERSION}/"; \
     export CPPFLAGS="-L/openssl-${OPENSSL_VERSION}/include"; \
-    ./configure --enable-optimizations --with-lto=full --disable-test-modules  \
-    --without-doc-strings --with-computed-gotos --enable-shared --with-system-ffi  \
+    export TCLTK_LIBS="-ltcl8.6 -ltk8.6"; \
+    export TCLTK_CFLAGS=-I/usr/include/tcl8.6; \
+    ./configure --enable-optimizations --with-lto=full --disable-test-modules \
+    --with-computed-gotos --enable-shared  \
     --enable-loadable-sqlite-extensions --with-ssl-default-suites=openssl --with-openssl=/openssl-${OPENSSL_VERSION}/ \
     --with-openssl-rpath=auto
 
