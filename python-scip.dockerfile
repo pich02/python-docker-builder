@@ -3,7 +3,7 @@ FROM pich02/python3-glibc2.24:3.13.3
 ENV OPENSSL_DIR=/openssl320
 ENV OPENSSL_VERSION=3.2.0
 
-RUN curl -O https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz; \
+RUN wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz; \
     rm -rf /openssl-3.2.0/; \
     tar xvf openssl-${OPENSSL_VERSION}.tar.gz
 
