@@ -11,9 +11,9 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
   --mount=target=/var/cache/apt,type=cache,sharing=locked \
   apt update; \
   apt install -y git cmake build-essential libz-dev libgmp-dev libreadline-dev libncurses-dev; \
-  apt-get install -y wget g++ m4 xz-utils unzip zlib1g-dev libboost-prog libbooram-options-devst-serialization-dev libboost-regex-dev libboost-iostreams-dev libtbb-dev libreadline-dev pkg-config git liblapack-dev libgsl-dev flex bison libcliquer-dev gfortran file libopenblas-dev rpm
+  apt-get install -y wget g++ m4 xz-utils unzip zlib1g-dev libboost-regex-dev libboost-iostreams-dev libtbb-dev libreadline-dev pkg-config git liblapack-dev libgsl-dev flex bison libcliquer-dev gfortran file libopenblas-dev rpm
 
-RUN git clone --depth 1 --branch release-712 https://github.com/scipopt/soplex.git; \
+RUN git clone --depth 1 --branch release-714 https://github.com/scipopt/soplex.git; \
     cd soplex; \
     mkdir build; \
     cd build; \
@@ -21,7 +21,7 @@ RUN git clone --depth 1 --branch release-712 https://github.com/scipopt/soplex.g
     make -j$(grep -c ^processor /proc/cpuinfo); \
     make -j$(grep -c ^processor /proc/cpuinfo) install;
 
-RUN git clone --depth 1 --branch v920 https://github.com/scipopt/scip.git;
+RUN git clone --depth 1 --branch v922 https://github.com/scipopt/scip.git;
 
 RUN mkdir scip/build; \
     mkdir scip/lib; \
