@@ -1,20 +1,10 @@
 FROM pich02/python3-glibc2.24:3.13.3
 
-ENV OPENSSL_DIR=/openssl320
-ENV OPENSSL_VERSION=3.2.0
-
-RUN wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz; \
-    rm -rf /openssl-3.2.0/; \
-    tar xvf openssl-${OPENSSL_VERSION}.tar.gz
-
-RUN cd /openssl-3.2.0; \
-    ./config no-shared no-ssl2 no-ssl3 -fPIC --prefix=${OPENSSL_DIR} no-docs; \
-    make -j$(grep -c ^processor /proc/cpuinfo); \
-    make install
+RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
+    python3.13 -m pip install ninja \
 
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
-    python3.13 -m pip install ninja; \
-    python3.13 -m pip install --upgrade cmake
+    OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --upgrade cmake
 
 RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/apt,type=cache,sharing=locked \
