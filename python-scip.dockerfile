@@ -24,12 +24,12 @@ RUN wget https://scipopt.org/download/release/scip-9.2.2.tgz; \
 COPY ./builder-gcc-9-1-0.sh /builder-gcc-9-1-0.sh
 
 RUN chmod ugox+wrx builder-gcc-9-1-0.sh; \
-    export CXX=/root/opt/gcc-9.1.0/bin/g++; \
-    export CC=/root/opt/gcc-9.1.0/bin/gcc; \
-    export LD=/root/opt/gcc-9.1.0/bin/g++; \
     /builder-gcc-9-1-0.sh
 
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
+    export CXX=/root/opt/gcc-9.1.0/bin/g++; \
+    export CC=/root/opt/gcc-9.1.0/bin/gcc; \
+    export LD=/root/opt/gcc-9.1.0/bin/g++; \
     python3.13 -m pip install NumPy
 
 RUN python3.13 -m pip install pyscipopt==5.5.0; \
