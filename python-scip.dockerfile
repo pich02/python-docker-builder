@@ -1,10 +1,13 @@
 FROM pich02/python3-glibc2.24:3.13.3
 
-RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
-    python3.13 -m pip install ninja
+ARG PIP_EXTRA_INDEX
+ENV PIP_EXTRA_INDEX=$PIP_EXTRA_INDEX
 
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
-    OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --upgrade cmake
+    python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} ninja
+
+RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
+    OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} --upgrade cmake
 
 RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/apt,type=cache,sharing=locked \
@@ -30,9 +33,9 @@ RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
     export CXX=/root/opt/gcc-9.1.0/bin/g++; \
     export CC=/root/opt/gcc-9.1.0/bin/gcc; \
     export LD=/root/opt/gcc-9.1.0/bin/g++; \
-    python3.13 -m pip install NumPy
+    python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} NumPy
 
-RUN python3.13 -m pip install pyscipopt==5.5.0; \
+RUN python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} pyscipopt==5.5.0; \
   python3.13 -c "import pyscipopt;"
 
 CMD ["python3.13 -m pip list"]
