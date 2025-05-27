@@ -23,8 +23,10 @@ arch=$(uname -m)
 # Architecture we are building for.
 if [ $arch = "x86_64" ]; then
   arch_flags="-march=x86-64"
+  CC_ARGS="--with_tune"
 else
   arch_flags=""
+  CC_ARGS=""
 fi
 
 # Target linux/gnu
@@ -277,7 +279,7 @@ CC="$CC" CXX="$CXX" CFLAGS="$OPT_FLAGS" \
     --disable-libgcj \
     --enable-plugin  \
     --disable-multilib \
-    --with-tune=generic \
+    $CC_ARGS \
     --build=${build_target} \
     --target=${build_target} \
     --host=${build_target} \
