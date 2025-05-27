@@ -21,7 +21,11 @@ make_flags="-j$(grep -c ^processor /proc/cpuinfo)"
 arch=$(uname -m)
 
 # Architecture we are building for.
-arch_flags="-march=x86-64"
+if [ $arch = "x86_64" ]; then
+  arch_flags="-march=x86-64"
+else
+  arch_flags=""
+fi
 
 # Target linux/gnu
 build_target=${arch}-unknown-linux-gnu
