@@ -23,7 +23,7 @@ arch=$(uname -m)
 # Architecture we are building for.
 if [ $arch = "x86_64" ]; then
   arch_flags="-march=x86-64"
-  CC_ARGS="--with_tune"
+  CC_ARGS="--with-tune=generic"
 else
   arch_flags=""
   CC_ARGS=""
