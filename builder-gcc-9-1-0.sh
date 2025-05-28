@@ -24,13 +24,19 @@ arch=$(uname -m)
 if [ $arch = "x86_64" ]; then
   arch_flags="-march=x86-64"
   CC_ARGS="--with-tune=generic"
+  build_target=${arch}-unknown-linux-gnu
+elif [ $arch = "armv7l" ]; then
+  arch_flags=""
+  CC_ARGS="--with-float=hard"
+  build_target=${arch}-unknown-linux-gnueabihf
 else
   arch_flags=""
   CC_ARGS=""
+  build_target=${arch}-unknown-linux-gnueabihf
 fi
 
 # Target linux/gnu
-build_target=${arch}-unknown-linux-gnu
+
 
 # File locations.  Use 'install_dir' to specify where gcc will be installed.
 # The other directories are used only during the build process, and can later be
