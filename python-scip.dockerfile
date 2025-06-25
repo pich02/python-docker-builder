@@ -1,7 +1,8 @@
-FROM pich02/python3-glibc2.24:3.13.3
+FROM pich02/python3-glibc2.24:3.13.5
 
 ARG PIP_EXTRA_INDEX
 ENV PIP_EXTRA_INDEX=$PIP_EXTRA_INDEX
+ENV GCC_VERSION=9.3.0
 
 RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/apt,type=cache,sharing=locked \
@@ -24,15 +25,15 @@ RUN wget https://scipopt.org/download/release/scip-9.2.2.tgz; \
     make -j$(grep -c ^processor /proc/cpuinfo); \
     make install
 
-COPY ./builder-gcc-9-3-0.sh /builder-gcc-9-3-0.sh
+COPY ./builder-gcc.sh /builder-gcc.sh
 
-RUN chmod ugo+wrx builder-gcc-9-3-0.sh; \
-    /builder-gcc-9-3-0.sh
+RUN chmod ugo+wrx builder-gcc.sh; \
+    /builder-gcc.sh --gcc_version=$GCC_VERSION
 
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
-    export CXX=/root/opt/gcc-9.1.0/bin/g++; \
-    export CC=/root/opt/gcc-9.1.0/bin/gcc; \
-    export LD=/root/opt/gcc-9.1.0/bin/g++; \
+    export CXX=/root/opt/gcc-$GCC_VERSION/bin/g++; \
+    export CC=/root/opt/gcc-$GCC_VERSION/bin/gcc; \
+    export LD=/root/opt/gcc-$GCC_VERSION/bin/g++; \
     python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} NumPy
 
 RUN python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} pyscipopt==5.5.0; \

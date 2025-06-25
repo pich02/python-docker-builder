@@ -20,6 +20,26 @@ make_flags="-j$(grep -c ^processor /proc/cpuinfo)"
 
 arch=$(uname -m)
 
+
+for param in "$@"; do
+  paramName=$(echo $param | cut -d '=' -f 1)
+  lenTot=$(echo $param | wc -m)
+  lenName=$(echo $paramName | wc -m)
+  len=$(expr $lenTot - $lenName)
+  paramValue=$(echo $param | tail -c $len)
+  case $paramName in
+  '--'*)
+    p=${paramName:2}
+    v=${paramValue}
+    # _log "CMD : ${p}=${v}"
+    export ${p}=${v} 2>/dev/null
+    ;;
+  *)
+    _log "ERROR : ${p}=${v}"
+    ;;
+  esac
+done
+
 # Architecture we are building for.
 if [ $arch = "x86_64" ]; then
   arch_flags="-march=x86-64"
