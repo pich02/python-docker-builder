@@ -24,10 +24,10 @@ RUN wget https://scipopt.org/download/release/scip-9.2.2.tgz; \
     make -j$(grep -c ^processor /proc/cpuinfo); \
     make install
 
-COPY ./builder-gcc-9-1-0.sh /builder-gcc-9-1-0.sh
+COPY ./builder-gcc-9-3-0.sh /builder-gcc-9-3-0.sh
 
-RUN chmod ugo+wrx builder-gcc-9-1-0.sh; \
-    /builder-gcc-9-1-0.sh
+RUN chmod ugo+wrx builder-gcc-9-3-0.sh; \
+    /builder-gcc-9-3-0.sh
 
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
     export CXX=/root/opt/gcc-9.1.0/bin/g++; \

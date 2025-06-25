@@ -11,7 +11,7 @@
 #======================================================================
 
 # Provide the version of gcc being built (e.g. 9.1.0)
-gcc_version=9.1.0
+gcc_version=9.3.0
 
 # Additional makefile options.  E.g., "-j 4" for parallel builds.  Parallel
 # builds are faster, however it can cause a build to fail if the project
