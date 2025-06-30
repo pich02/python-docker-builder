@@ -15,9 +15,9 @@ RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
     OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} --upgrade cmake
 
-RUN wget https://scipopt.org/download/release/scip-9.2.2.tgz; \
-    tar -xvf scip-9.2.2.tgz; \
-    cd scip-9.2.2; \
+RUN wget https://scipopt.org/download/release/scip-9.1.1.tgz; \
+    tar -xvf scip-9.1.1.tgz; \
+    cd scip-9.1.1; \
     mkdir build ; \
     cd build; \
     export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
@@ -25,18 +25,7 @@ RUN wget https://scipopt.org/download/release/scip-9.2.2.tgz; \
     make -j$(grep -c ^processor /proc/cpuinfo); \
     make install
 
-COPY ./builder-gcc.sh /builder-gcc.sh
-
-RUN chmod ugo+wrx builder-gcc.sh; \
-    /builder-gcc.sh --gcc_version=$GCC_VERSION
-
-RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
-    export CXX=/root/opt/gcc-$GCC_VERSION/bin/g++; \
-    export CC=/root/opt/gcc-$GCC_VERSION/bin/gcc; \
-    export LD=/root/opt/gcc-$GCC_VERSION/bin/g++; \
-    python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} NumPy
-
-RUN python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} pyscipopt==5.5.0; \
+RUN python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} pyscipopt==5.3.0; \
   python3.13 -c "import pyscipopt;"
 
 CMD ["python3.13 -m pip list"]
