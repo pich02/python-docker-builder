@@ -259,7 +259,7 @@ __banner Cleaning environment
 U=$USER
 H=$HOME
 
-for i in $(env | awk -F"=" '{print $1}') ;
+for i in $(env | awk -F"=" '{print $1}' | grep -v gcc_version) ;
 do
     unset $i || true   # ignore unset fails
 done
