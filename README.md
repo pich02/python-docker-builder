@@ -54,7 +54,7 @@ sudo docker buildx build -t pich02/scip-multi-arch:$TAG . -f scip-build.dockerfi
 ## 1.4. Build python3 with scip ##
 
 ```bash
-TAG=3.13.3
+TAG=3.13.5
 docker buildx build -t pich02/python3-glibc2.24:${TAG}-scip . -f python-scip.dockerfile --progress=plain --platform=linux/amd64,linux/arm/v7,linux/arm64 --push
 ```
 

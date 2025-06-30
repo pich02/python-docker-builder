@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Instructions for building gcc 9.x from source.
 
@@ -31,11 +31,11 @@ for param in "$@"; do
   '--'*)
     p=${paramName:2}
     v=${paramValue}
-    # _log "CMD : ${p}=${v}"
+    echo "CMD : ${p}=${v}"
     export ${p}=${v} 2>/dev/null
     ;;
   *)
-    _log "ERROR : ${p}=${v}"
+    echo "ERROR : ${p}=${v}"
     ;;
   esac
 done
