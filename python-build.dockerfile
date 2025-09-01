@@ -75,7 +75,7 @@ RUN cd Python-*/; \
     export CPPFLAGS="-L/openssl-${OPENSSL_VERSION}/include"; \
     export TCLTK_LIBS="-ltcl8.6 -ltk8.6"; \
     export TCLTK_CFLAGS=-I/usr/include/tcl8.6; \
-    ./configure --enable-optimizations --without-docstrings --with-lto=full --disable-test-modules \
+    ./configure --enable-optimizations --without-doc-strings --with-lto=full --disable-test-modules \
     --with-computed-gotos --enable-shared  \
     --enable-loadable-sqlite-extensions --with-ssl-default-suites=openssl --with-openssl=/openssl-${OPENSSL_VERSION}/ \
     --with-openssl-rpath=auto

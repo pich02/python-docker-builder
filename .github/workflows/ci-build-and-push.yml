@@ -30,7 +30,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build-${{ matrix.arch }}
       cancel-in-progress: true
-    name: build image
+    name: build image ${{ inputs.dockerfile }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 300
     strategy:
@@ -42,7 +42,7 @@ jobs:
             runner: "ubuntu-latest"
           - platform: "linux/arm/v7"
             arch: "armv7l"
-            runner: "ubuntu-24.04-arm"
+            runner: "ubuntu-latest"
           - platform: "linux/arm64"
             arch: "arm64"
             runner: "ubuntu-24.04-arm"
