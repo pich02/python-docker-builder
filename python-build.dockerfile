@@ -11,7 +11,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
 ENV OPENSSL_VERSION=3.2.0
 ENV RUSTC_VERSION=1.84.0
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.13.5
+ENV PYTHON_VERSION=3.13.7
 
 RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
