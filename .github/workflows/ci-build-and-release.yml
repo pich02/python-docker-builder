@@ -101,11 +101,13 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: python3-glibc2.24:$PYTHON_VERSION-${{ matrix.arch }}
+          tags: python3-glibc2.24:${{ env.PYTHON_VERSION }}-${{ matrix.arch }}
           platforms: ${{ matrix.platform }}
           context: .
           no-cache: true
           file: ./python-build.dockerfile
+          build-args: |
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
 
   create-manifest:
     needs: [ build-multi-arch ]

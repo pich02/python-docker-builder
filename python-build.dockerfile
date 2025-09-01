@@ -4,6 +4,7 @@ FROM debian:stretch-slim as builder
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG TARGETVARIANT
+ARG PYTHON_VERSION=3.13.7
 
 RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH}, TARGETVARIANT=${TARGETVARIANT}" \
     && echo GLIBC=$(ldd --version)
@@ -11,7 +12,7 @@ RUN echo "Building for TARGETPLATFORM=${TARGETPLATFORM}, TARGETARCH=${TARGETARCH
 ENV OPENSSL_VERSION=3.2.0
 ENV RUSTC_VERSION=1.84.0
 ENV LANG=C.UTF-8
-ENV PYTHON_VERSION=3.13.7
+ENV PYTHON_VERSION=$PYTHON_VERSION
 
 RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n \
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
