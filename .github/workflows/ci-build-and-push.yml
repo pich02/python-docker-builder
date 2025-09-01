@@ -1,0 +1,156 @@
+name: CD - Build and release Opticharge binary
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: 'The branch to build'
+        required: true
+        type: string
+      python_version:
+        description: 'python version to build'
+        required: true
+        type: string
+      tag:
+        description: 'docker tag to push'
+        required: true
+        type: string
+      dockerfile:
+        description: 'DOcker file to build'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: write
+
+
+jobs:
+  build-multi-arch:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-build-${{ matrix.arch }}
+      cancel-in-progress: true
+    name: build image
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 300
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - platform: "linux/amd64"
+            arch: "x86_64"
+            runner: "ubuntu-latest"
+          - platform: "linux/arm/v7"
+            arch: "armv7l"
+            runner: "ubuntu-24.04-arm"
+          - platform: "linux/arm64"
+            arch: "arm64"
+            runner: "ubuntu-24.04-arm"
+    steps:
+      - name: Collect Workflow Telemetry
+        if: ${{ !env.ACT }}
+        uses: catchpoint/workflow-telemetry-action@v2
+        with:
+          comment_on_pr: false
+
+      - uses: actions/checkout@v4
+        if: ${{ !env.ACT }}
+        with:
+          repository: pich02/python-docker-builder
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ${{ matrix.platform }}
+          cache-image: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: ${{ matrix.platform }}
+          cache-binary: true
+
+      - name: Cache var-cache-apt
+        id: cache-var-cache-apt
+        uses: actions/cache@v4
+        with:
+          path: var-cache-apt
+          key: var-cache-apt-${{ hashFiles('./python-build.dockerfile') }}
+
+      - name: Cache var-lib-apt
+        id: cache-var-lib-apt
+        uses: actions/cache@v4
+        with:
+          path: var-lib-apt
+          key: var-lib-apt-${{ hashFiles('./python-build.dockerfile') }}
+
+      - name: inject var-cache-apt into docker
+        uses: reproducible-containers/buildkit-cache-dance@v2.1.4
+        with:
+          cache-source: var-cache-apt
+          cache-target: /var/cache/apt
+          skip-extraction: ${{ steps.cache-var-cache-apt.outputs.cache-hit }}
+
+      - name: inject var-lib-apt into docker
+        uses: reproducible-containers/buildkit-cache-dance@v2.1.4
+        with:
+          cache-source: var-lib-apt
+          cache-target: /var/lib/apt
+          skip-extraction: ${{ steps.cache-var-lib-apt.outputs.cache-hit }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: pich02/python3-glibc2.24:${{ inputs.tag }}-${{ matrix.arch }}
+          platforms: ${{ matrix.platform }}
+          context: .
+          no-cache: true
+          file: ${{ inputs.dockerfile }}
+          build-args: |
+            PYTHON_VERSION=${{ inputs.python_version }}
+
+  create-manifest:
+    needs: [ build-multi-arch ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect Workflow Telemetry
+        if: ${{ !env.ACT }}
+        uses: catchpoint/workflow-telemetry-action@v2
+        with:
+          comment_on_pr: false
+
+      - uses: actions/checkout@v4
+        if: ${{ !env.ACT }}
+        with:
+          repository: pich02/python-docker-builder
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ${{ matrix.platform }}
+          cache-image: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: "linux/amd64,linux/arm/v7,linux/arm64"
+          cache-binary: true
+
+      - name: "create docker manifest"
+        run: |
+          docker manifest create python3-glibc2.24:${{ inputs.tag }} \
+            pich02/python3-glibc2.24:${{ inputs.tag }}-amd64 \
+            pich02/python3-glibc2.24:${{ inputs.tag }}-armv7l \
+            pich02/python3-glibc2.24:${{ inputs.tag }}-arm64;
+          docker manifest push pich02/python3-glibc2.24:${{ inputs.tag }}
