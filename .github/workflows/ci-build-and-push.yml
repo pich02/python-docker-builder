@@ -57,7 +57,7 @@ jobs:
       matrix:
         include:
           - platform: "linux/amd64"
-            arch: "x86_64"
+            arch: "amd64"
             runner: "ubuntu-latest"
           - platform: "linux/arm/v7"
             arch: "armv7l"
@@ -172,4 +172,4 @@ jobs:
             pich02/python3-glibc2.24:${{ inputs.tag }}-amd64 \
             pich02/python3-glibc2.24:${{ inputs.tag }}-armv7l \
             pich02/python3-glibc2.24:${{ inputs.tag }}-arm64;
-          docker buildx imagetools create -t pich02/python3-glibc2.24:${{ inputs.tag }} pich02/python3-glibc2.24:${{ inputs.tag }}-x86_64 pich02/python3-glibc2.24:${{ inputs.tag }}-armv7l pich02/python3-glibc2.24:${{ inputs.tag }}-arm64;
+          docker buildx imagetools create -t pich02/python3-glibc2.24:${{ inputs.tag }} pich02/python3-glibc2.24:${{ inputs.tag }}-amd64 pich02/python3-glibc2.24:${{ inputs.tag }}-armv7l pich02/python3-glibc2.24:${{ inputs.tag }}-arm64;
