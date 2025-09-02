@@ -1,4 +1,4 @@
-name: CD - Build and release Opticharge binary
+name: CI - build and push with scip
 
 on:
   push:
