@@ -15,7 +15,7 @@ RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
     OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} --upgrade cmake
 
-RUN wget https://scipopt.org/download/release/scip-9.1.1.tgz; \
+RUN wget --no-check-certificate https://scipopt.org/download/release/scip-9.1.1.tgz; \
     tar -xvf scip-9.1.1.tgz; \
     cd scip-9.1.1; \
     mkdir build ; \

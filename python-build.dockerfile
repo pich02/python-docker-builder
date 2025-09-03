@@ -46,15 +46,22 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     apt-get install -y uuid-dev; \
     apt-get install -y python3-lxml; \
     apt-get install -y python3-wheel; \
+    apt-get install -y git cmake gcc g++ clang gdb; \
     apt -y install apt-transport-https ca-certificates curl
 
-RUN wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz; \
+RUN git clone --branch stable https://github.com/rui314/mold.git; \
+    cd mold; \
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=c++ -B build; \
+    cmake --build build -j$(grep -c ^processor /proc/cpuinfo); \
+    cmake --build build --target install
+
+RUN wget --no-check-certificate https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz; \
     tar xzvf openssl-${OPENSSL_VERSION}.tar.gz
 
 RUN cd openssl-${OPENSSL_VERSION}; \
      ./config -fPIC --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic no-docs; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
-    make -j$CORE_NB; \
+    mold -run make -j$CORE_NB; \
     make install
 
 RUN /usr/bin/wget --no-check-certificate https://sh.rustup.rs -O rustup.sh;\
@@ -65,7 +72,7 @@ RUN /usr/bin/wget --no-check-certificate https://sh.rustup.rs -O rustup.sh;\
 
 ENV PATH=$PATH:/root/.cargo/bin
 
-RUN wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz -O Python-x.y.z.tar.gz; \
+RUN wget --no-check-certificate https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz -O Python-x.y.z.tar.gz; \
     tar -xvf Python-x.y.z.tar.gz
 
 ENV LD_LIBRARY_PATH=/usr/local/lib/
@@ -82,7 +89,7 @@ RUN cd Python-*/; \
 
 RUN cd Python-*/; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
-    make PROFILE_TASK="-m test.regrtest --pgo -j$CORE_NB" -j$CORE_NB; \
+    mold -run make PROFILE_TASK="-m test.regrtest --pgo -j$CORE_NB" -j$CORE_NB; \
     make install; \
     /sbin/ldconfig -v; \
     make clean; \
