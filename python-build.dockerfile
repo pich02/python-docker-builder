@@ -21,6 +21,7 @@ RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n 
 RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/apt,type=cache,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean; \
+    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' >/etc/apt/apt.conf.d/keep-cache; \
     apt-get update; \
     apt-get -y install software-properties-common; \
     apt-get install -y build-essential; \
@@ -46,14 +47,8 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     apt-get install -y uuid-dev; \
     apt-get install -y python3-lxml; \
     apt-get install -y python3-wheel; \
-    apt-get install -y git cmake gcc g++ clang gdb; \
+    apt-get install -y mold; \
     apt -y install apt-transport-https ca-certificates curl
-
-RUN git clone --branch stable https://github.com/rui314/mold.git; \
-    cd mold; \
-    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=c++ -B build; \
-    cmake --build build -j$(grep -c ^processor /proc/cpuinfo); \
-    cmake --build build --target install
 
 RUN wget --no-check-certificate https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz; \
     tar xzvf openssl-${OPENSSL_VERSION}.tar.gz
