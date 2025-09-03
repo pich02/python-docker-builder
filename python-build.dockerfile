@@ -56,7 +56,7 @@ RUN wget --no-check-certificate https://www.openssl.org/source/openssl-${OPENSSL
 RUN cd openssl-${OPENSSL_VERSION}; \
      ./config -fPIC --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic no-docs; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
-    mold -run make -j$CORE_NB; \
+    make -j$CORE_NB; \
     make install
 
 RUN /usr/bin/wget --no-check-certificate https://sh.rustup.rs -O rustup.sh;\
@@ -84,7 +84,7 @@ RUN cd Python-*/; \
 
 RUN cd Python-*/; \
     CORE_NB=$(grep -c ^processor /proc/cpuinfo); \
-    mold -run make PROFILE_TASK="-m test.regrtest --pgo -j$CORE_NB" -j$CORE_NB; \
+    make PROFILE_TASK="-m test.regrtest --pgo -j$CORE_NB" -j$CORE_NB; \
     make install; \
     /sbin/ldconfig -v; \
     make clean; \
