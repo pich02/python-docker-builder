@@ -41,7 +41,9 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
+      python_version: 3.13.7
       tag: 3.13.7-scip
+      dockerfile: ./python-scip.dockerfile
 
   merge-manifest-scip:
     name: merge manifest multi arch scip
@@ -50,6 +52,4 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      python_version: 3.13.7
       tag: 3.13.7
-      dockerfile: ./python-build.dockerfile
