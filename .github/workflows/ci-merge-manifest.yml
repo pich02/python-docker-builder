@@ -64,8 +64,4 @@ jobs:
 
       - name: "create docker manifest"
         run: |
-          docker manifest create python3-glibc2.24:${{ inputs.tag }} \
-            pich02/python3-glibc2.24:${{ inputs.tag }}-amd64 \
-            pich02/python3-glibc2.24:${{ inputs.tag }}-armv7l \
-            pich02/python3-glibc2.24:${{ inputs.tag }}-arm64;
           docker buildx imagetools create -t pich02/python3-glibc2.24:${{ inputs.tag }} pich02/python3-glibc2.24:${{ inputs.tag }}-amd64 pich02/python3-glibc2.24:${{ inputs.tag }}-armv7l pich02/python3-glibc2.24:${{ inputs.tag }}-arm64;
