@@ -1,4 +1,4 @@
-name: CI - build and push with scip
+name: CI - build, push and merge with scip
 
 on:
   push:
@@ -25,9 +25,20 @@ jobs:
       tag: 3.13.7
       dockerfile: ./python-build.dockerfile
 
+  merge-manifest-python:
+    name: merge manifest multi arch python
+    uses: ./.github/workflows/ci-merge-manifest.yml
+    needs: [ build-python ]
+    secrets: inherit
+    with:
+      branch: ${{ inputs.branch }}
+      python_version: 3.13.7
+      tag: 3.13.7
+      dockerfile: ./python-build.dockerfile
+
   build-scip:
     name: Build scip multi arch
-    needs: [ build-python ]
+    needs: [ merge-manifest-python ]
     uses: ./.github/workflows/ci-build-and-push.yml
     secrets: inherit
     with:
@@ -35,3 +46,14 @@ jobs:
       python_version: 3.13.7
       tag: 3.13.7-scip
       dockerfile: ./python-scip.dockerfile
+
+  merge-manifest-scip:
+    name: merge manifest multi arch scip
+    needs: [ build-scip ]
+    uses: ./.github/workflows/ci-merge-manifest.yml
+    secrets: inherit
+    with:
+      branch: ${{ inputs.branch }}
+      python_version: 3.13.7
+      tag: 3.13.7
+      dockerfile: ./python-build.dockerfile
