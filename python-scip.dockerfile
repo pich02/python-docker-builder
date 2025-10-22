@@ -12,10 +12,7 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     apt-get install -y wget g++ m4 xz-utils libgmp-dev unzip zlib1g-dev libboost-program-options-dev libboost-serialization-dev libboost-regex-dev libboost-iostreams-dev libtbb-dev libreadline-dev pkg-config git liblapack-dev libgsl-dev flex bison libcliquer-dev gfortran file dpkg-dev libopenblas-dev rpm
 
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
-    python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} ninja
-
-RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
-    OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} --upgrade cmake
+    OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} --upgrade ninja cmake
 
 RUN wget --no-check-certificate https://scipopt.org/download/release/scip-9.1.1.tgz; \
     tar -xvf scip-9.1.1.tgz; \
