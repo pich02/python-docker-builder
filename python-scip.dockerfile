@@ -15,7 +15,7 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
 
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
     OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} cmake; \
-    if ["${TARGETARCH}" != "armv7l"]; then; \
+    if [ "${TARGETARCH}" != "armv7l" ]; then \
       OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} ninja; \
     fi
 
