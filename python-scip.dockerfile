@@ -1,10 +1,13 @@
 FROM pich02/python3-glibc2.24:3.13.7
 
 ARG TARGETARCH
+ARG TARGETVARIANT
 
 ARG PIP_EXTRA_INDEX
 ENV PIP_EXTRA_INDEX=$PIP_EXTRA_INDEX
 ENV GCC_VERSION=9.3.0
+
+RUN echo "${TARGETARCH}-${TARGETVARIANT}"
 
 RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     --mount=target=/var/cache/apt,type=cache,sharing=locked \
@@ -15,7 +18,7 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
 
 RUN export MAKEFLAGS="-j$(grep -c ^processor /proc/cpuinfo)"; \
     OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} cmake; \
-    if [ "${TARGETARCH}" != "armv7l" ]; then \
+    if [ "${TARGETARCH}${TARGETVARIANT}" != "armv7" ]; then \
       OPENSSL_ROOT_DIR=/openssl-3.2.0/ python3.13 -m pip install --no-input --extra-index-url=${PIP_EXTRA_INDEX} ninja; \
     fi
 
