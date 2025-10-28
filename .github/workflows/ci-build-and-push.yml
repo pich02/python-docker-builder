@@ -102,7 +102,7 @@ jobs:
         id: cache
         with:
           path: cache-mount
-          key: cache-mount-${{ hashFiles('${{ inputs.dockerfile }}') }}-${{ matrix.arch }}
+          key: cache-mount-${{ hashFiles(${{ inputs.dockerfile }}) }}-${{ matrix.arch }}
 
       - name: Restore Docker cache mounts
         uses: reproducible-containers/buildkit-cache-dance@v3
