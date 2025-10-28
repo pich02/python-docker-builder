@@ -132,7 +132,8 @@ jobs:
           tags: pich02/python3-glibc2.24:${{ inputs.tag }}-${{ matrix.arch }}
           platforms: ${{ matrix.platform }}
           context: .
-          no-cache: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           file: ${{ inputs.dockerfile }}
           build-args: |
             PYTHON_VERSION=${{ inputs.python_version }}
