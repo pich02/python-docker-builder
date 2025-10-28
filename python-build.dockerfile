@@ -18,8 +18,8 @@ RUN echo "deb http://archive.debian.org/debian/ stretch main contrib non-free\n 
     deb http://archive.debian.org/debian/ stretch-proposed-updates main contrib non-free\n \
     deb http://archive.debian.org/debian-security stretch/updates main contrib non-free\n" >> /etc/apt/sources.list
 
-RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
-    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked  \
     rm -f /etc/apt/apt.conf.d/docker-clean; \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' >/etc/apt/apt.conf.d/keep-cache; \
     apt-get update; \
