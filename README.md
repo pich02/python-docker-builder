@@ -2,6 +2,7 @@
 
 
 Images publish here : https://hub.docker.com/r/pich02/python3-glibc2.24/tags
+Pypi server with GLIBC 2.24 compatible modules : https://pypi.vpich.duckdns.org/packages/
 
 # 1. Build multiplatform docker  {#r_build_docker} ###
 
