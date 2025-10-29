@@ -1,4 +1,4 @@
-FROM pich02/python3-glibc2.24:3.13.7
+FROM pich02/python3-glibc2.24:3.13.9
 
 ARG TARGETARCH
 ARG TARGETVARIANT
