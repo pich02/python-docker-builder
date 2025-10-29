@@ -8,10 +8,6 @@ on:
       branch:
         description: 'The branch to build'
         required: true
-      python_version:
-        description: "python version"
-        required: false
-        default: "3.13.9"
 
 permissions:
   contents: write
@@ -24,8 +20,8 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      python_version: ${{ inputs.python_version }}
-      tag: ${{ inputs.python_version }}
+      python_version: 3.13.9
+      tag: 3.13.9
       dockerfile: ./python-build.dockerfile
 
   merge-manifest-python:
@@ -35,7 +31,7 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      tag: ${{ inputs.python_version }}
+      tag: 3.13.9
 
   build-scip:
     name: Build scip multi arch
@@ -44,8 +40,8 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      python_version: ${{ inputs.python_version }}
-      tag: ${{ inputs.python_version }}-scip
+      python_version: 3.13.9
+      tag: 3.13.9-scip
       dockerfile: ./python-scip.dockerfile
 
   merge-manifest-scip:
@@ -55,4 +51,4 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      tag: ${{ inputs.python_version }}-scip
+      tag: 3.13.9-scip
