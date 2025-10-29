@@ -52,4 +52,4 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      tag: 3.13.7
+      tag: 3.13.7-scip
