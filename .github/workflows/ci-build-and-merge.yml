@@ -23,8 +23,8 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      python_version: ${{ env.PYTHON_VERSION }}
-      tag: ${{ env.PYTHON_VERSION }}
+      python_version: ${{ vars.PYTHON_VERSION }}
+      tag: ${{ vars.PYTHON_VERSION }}
       dockerfile: ./python-build.dockerfile
 
   merge-manifest-python:
@@ -34,7 +34,7 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      tag: ${{ env.PYTHON_VERSION }}
+      tag: ${{ vars.PYTHON_VERSION }}
 
   build-scip:
     name: Build scip multi arch
@@ -43,8 +43,8 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      python_version: ${{ env.PYTHON_VERSION }}
-      tag: ${{ env.PYTHON_VERSION }}-scip
+      python_version: ${{ vars.PYTHON_VERSION }}
+      tag: ${{ vars.PYTHON_VERSION }}-scip
       dockerfile: ./python-scip.dockerfile
 
   merge-manifest-scip:
@@ -54,4 +54,4 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      tag: ${{ env.PYTHON_VERSION }}-scip
+      tag: ${{ vars.PYTHON_VERSION }}-scip
