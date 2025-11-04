@@ -91,7 +91,7 @@ RUN cd Python-*/; \
     make distclean
 
 RUN wget https://bootstrap.pypa.io/get-pip.py;  \
-    python3.13 get-pip.py; \
+    python3.14 get-pip.py; \
     rm get-pip.py
 
 ## clean src
@@ -106,6 +106,6 @@ RUN rm -rf /Python-*; \$ \
     rm -rf /var/lib/apt/lists/*; \
     rm -rf /root/.cache/*
 
-RUN python3.13 --version
+RUN python3.14 --version
 
-CMD ["python3.13  -m pip list"]
+CMD ["python3.14  -m pip list"]
