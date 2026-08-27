@@ -66,7 +66,7 @@ docker buildx build -t pich02/python3-glibc2.24:${TAG}-scip . -f python-scip.doc
 Run an image :
 
 ```bash
-docker run --name test-debug --entrypoint /bin/sleep pich02/python3-glibc2.24:3.13.12 infinity
+docker run --name test-debug --entrypoint /bin/sleep pich02/python3-glibc2.24:3.13.15 infinity
 ```
 
 Connect to it with :

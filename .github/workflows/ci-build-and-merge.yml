@@ -20,8 +20,8 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      python_version: 3.13.12
-      tag: 3.13.12
+      python_version: 3.13.15
+      tag: 3.13.15
       dockerfile: ./python-build.dockerfile
 
   merge-manifest-python:
@@ -31,7 +31,7 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      tag: 3.13.12
+      tag: 3.13.15
 
   build-scip:
     name: Build scip multi arch
@@ -40,8 +40,8 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      python_version: 3.13.12
-      tag: 3.13.12-scip
+      python_version: 3.13.15
+      tag: 3.13.15-scip
       dockerfile: ./python-scip.dockerfile
 
   merge-manifest-scip:
@@ -51,4 +51,4 @@ jobs:
     secrets: inherit
     with:
       branch: ${{ inputs.branch }}
-      tag: 3.13.12-scip
+      tag: 3.13.15-scip
