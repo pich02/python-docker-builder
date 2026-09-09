@@ -19,6 +19,10 @@ on:
         description: 'Docker file to build'
         required: true
         type: string
+      pip_extra_index:
+        description: 'Pip extra index'
+        required: false
+        type: string
   workflow_dispatch:
     inputs:
       branch:
@@ -37,6 +41,10 @@ on:
         description: 'Docker file to build'
         required: true
         type: string
+      pip_extra_index:
+        description: 'Pip extra index'
+        required: false
+        type: string
 
 
 permissions:
@@ -51,7 +59,7 @@ jobs:
       cancel-in-progress: true
     name: build ${{ matrix.arch }} ${{ inputs.dockerfile }}
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 300
+    timeout-minutes: 600
     strategy:
       fail-fast: true
       matrix:
@@ -67,10 +75,8 @@ jobs:
             runner: "ubuntu-24.04-arm"
     steps:
       - name: Collect Workflow Telemetry
+        uses: massongit/actions-workflow-metrics@v0.0.8
         if: ${{ !env.ACT }}
-        uses: catchpoint/workflow-telemetry-action@v2
-        with:
-          comment_on_pr: false
 
       - uses: actions/checkout@v4
         if: ${{ !env.ACT }}
@@ -130,3 +136,4 @@ jobs:
           file: ${{ inputs.dockerfile }}
           build-args: |
             PYTHON_VERSION=${{ inputs.python_version }}
+            PIP_EXTRA_INDEX=${{ inputs.pip_extra_index }}

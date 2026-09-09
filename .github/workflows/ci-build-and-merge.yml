@@ -43,6 +43,7 @@ jobs:
       python_version: 3.13.15
       tag: 3.13.15-scip
       dockerfile: ./python-scip.dockerfile
+      pip_extra_index: ${{ vars.PIP_EXTRA_INDEX }}
 
   merge-manifest-scip:
     name: merge manifest multi arch scip

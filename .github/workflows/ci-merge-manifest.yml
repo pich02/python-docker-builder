@@ -31,12 +31,6 @@ jobs:
   merge-manifest:
     runs-on: ubuntu-latest
     steps:
-      - name: Collect Workflow Telemetry
-        if: ${{ !env.ACT }}
-        uses: catchpoint/workflow-telemetry-action@v2
-        with:
-          comment_on_pr: false
-
       - uses: actions/checkout@v4
         if: ${{ !env.ACT }}
         with:
